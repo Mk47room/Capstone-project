@@ -11,7 +11,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.security.spec.ECField;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class App {
     public static void main(String[] args) {
@@ -104,6 +107,11 @@ public class App {
                 }
                 case 4 ->{
                     // count products by vendor.(no input)
+                    List<Map<String, Integer>> vendorCounts = productService.countProductsByVendor();
+                    System.out.println("Product Counts by Vendor:");
+                    vendorCounts.stream()
+                            .flatMap(map -> map.entrySet().stream())
+                            .forEach(entry -> System.out.println(entry.getKey() + ": " + entry.getValue()));
                 }
 
                 default -> {

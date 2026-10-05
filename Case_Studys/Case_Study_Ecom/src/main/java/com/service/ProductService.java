@@ -7,6 +7,7 @@ import com.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ProductService {
@@ -38,5 +39,9 @@ public class ProductService {
 
     public void updateStockById(int id, int stock) {
         productRepository.updateStockById(id,stock);
+    }
+
+    public List<Map<String, Integer>> countProductsByVendor() {
+        return productRepository.countProductsByVendor();
     }
 }

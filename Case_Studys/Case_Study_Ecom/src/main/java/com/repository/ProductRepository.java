@@ -1,5 +1,6 @@
 package com.repository;
 
+import com.Mapper.ProductCountMapperFromRs;
 import com.Mapper.ProductMapperFromRs;
 import com.dto.ProductDto;
 import com.model.Product;
@@ -7,16 +8,19 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class ProductRepository {
 
     private final JdbcTemplate jdbcTemplate;
     private final ProductMapperFromRs productMapperFromRs;
+    private final ProductCountMapperFromRs productCountMapperFromRs;
 
-    public ProductRepository(JdbcTemplate jdbcTemplate, ProductMapperFromRs productMapperFromRs) {
+    public ProductRepository(JdbcTemplate jdbcTemplate, ProductMapperFromRs productMapperFromRs, ProductCountMapperFromRs productCountMapperFromRs) {
         this.jdbcTemplate = jdbcTemplate;
         this.productMapperFromRs = productMapperFromRs;
+        this.productCountMapperFromRs = productCountMapperFromRs;
     }
 
     public void insertProduct(Product product) {
@@ -55,6 +59,17 @@ public class ProductRepository {
         String sql = "update product set stock_quantity = ? where id = ?";
         Object[] stockObject = new Object[]{stock,id};
         jdbcTemplate.update(sql,stockObject);
+
+    }
+
+    public List<Map<String, Integer>> countProductsByVendor() {
+        String sql = """
+                        SELECT v.name AS vendor_name, COUNT(p.id) AS product_count
+                        FROM vendor v
+                        LEFT JOIN product p ON v.id = p.vendor_id
+                        GROUP BY v.id, v.name
+                        """;
+        return jdbcTemplate.query(sql,productCountMapperFromRs);
 
     }
 }
